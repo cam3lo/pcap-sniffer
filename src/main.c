@@ -10,13 +10,28 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-void callback(u_char *useless,
-        const struct pcap_pkthdr *pkthdr,
-        const u_char *packet)
-{
+void callback(u_char *useless, 
+        const struct pcap_pkthdr *pkthdr, const u_char *packet) {
   static int count = 1;
-  printf("\nPacket number [%d], length of this packet is: %d\n", count++, pkthdr->len);
+  printf("\nPacket number [%d], length of this packet is: %d\n", 
+          count++, pkthdr->len);
 }
+
+void printDevs(pcap_if_t *printDevice, 
+        pcap_if_t *listOfDevices, int i) {
+    printf("PCAP: Finding available network devices...\n");
+    printf("PCAP: Here is a list of available devices on your system\n");
+    printf("--------------------------------------------------------\n");
+
+    for(printDevice = listOfDevices; printDevice; 
+            printDevice = printDevice->next) {
+        printf("%d. %s", ++i, printDevice->name);
+        if(printDevice->description)
+            printf("\t\t%s\n", printDevice->description);
+        else
+            printf("\t\t(Sorry, no description available for this device)\n");
+    }
+}  
 
 int main(int argc, char *argv[]) {
     char *dev, dev_buff[64] = { 0 }, errbuf[PCAP_ERRBUF_SIZE];
@@ -39,17 +54,7 @@ int main(int argc, char *argv[]) {
     }
 
     // print available list to user
-    printf("PCAP: Finding available network devices...\n");
-    printf("PCAP: Here is a list of available devices on your system\n");
-    printf("--------------------------------------------------------\n");
-
-    for(device = alldevs; device; device = device->next) {
-        printf("%d. %s", ++i, device->name);
-        if(device->description)
-            printf("\t\t%s\n", device->description);
-        else
-            printf("\t\t(Sorry, no description available for this device)\n");
-    }
+    printDevs(device, alldevs, i);
 
     // ask user to specify interface for sniffing
     printf("\nEnter the interface for sniffing: ");
@@ -63,7 +68,8 @@ int main(int argc, char *argv[]) {
             printf("\n[%s]\n", errbuf);
             exit(1);
         } else{
-            printf("\n---You chose device [%s] to capture [%d] packets---\n");
+            printf("\n---You chose device [%s] to capture [%d] packets---\n",
+                    dev, atoi(argv[2]));
         }
     } else {
         printf("\n---Invalid Entry---\n");
