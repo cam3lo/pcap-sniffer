@@ -18,11 +18,12 @@ void callback(u_char *useless,
 }
 
 void printDevs(pcap_if_t *printDevice, 
-        pcap_if_t *listOfDevices, int i) {
+        pcap_if_t *listOfDevices) {
     printf("PCAP: Finding available network devices...\n");
     printf("PCAP: Here is a list of available devices on your system\n");
     printf("--------------------------------------------------------\n");
-
+    
+    int i = 0;
     for(printDevice = listOfDevices; printDevice; 
             printDevice = printDevice->next) {
         printf("%d. %s", ++i, printDevice->name);
@@ -33,9 +34,10 @@ void printDevs(pcap_if_t *printDevice,
     }
 }  
 
+void sniff(char *device, )
+
 int main(int argc, char *argv[]) {
     char *dev, dev_buff[64] = { 0 }, errbuf[PCAP_ERRBUF_SIZE];
-    int i = 0;
     pcap_t *descr;
     struct bpf_program fp; // holds compiled program
     bpf_u_int32 pMask;     // subnet mask
@@ -54,7 +56,7 @@ int main(int argc, char *argv[]) {
     }
 
     // print available list to user
-    printDevs(device, alldevs, i);
+    printDevs(device, alldevs);
 
     // ask user to specify interface for sniffing
     printf("\nEnter the interface for sniffing: ");
