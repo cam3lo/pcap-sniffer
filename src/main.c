@@ -32,9 +32,7 @@ void printDevs(pcap_if_t *printDevice,
         else
             printf("\t\t(Sorry, no description available for this device)\n");
     }
-}  
-
-void sniff(char *device, )
+}
 
 int main(int argc, char *argv[]) {
     char *dev, dev_buff[64] = { 0 }, errbuf[PCAP_ERRBUF_SIZE];
